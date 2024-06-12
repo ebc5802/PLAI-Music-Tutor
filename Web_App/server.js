@@ -46,14 +46,10 @@ async function runChat(userInput, session) {
         // Add initial prompt message only for new sessions
         chatHistory.push({
         role: "user",
-        parts: [{ text: `You are a native Spanish speaker named Enrique from Spain.
-        You are a language learner helper who works for Team DEET.
-        Your job is to assist the user in any way possible.
-        You are only allowed to use very simple Spanish phrases. You need to provide an English translation after each sentence you say in parentheses.
-        This is a very casual conversation where your goal is to help the user learn to add words to their vocabulary.`}], // Initial prompt message
+        parts: [{ text: `You are a music tutor helping the user have fun while practicing piano.`}], // Initial prompt message
         });
     }
-
+//        This is a casual conversation where your goal is to help the user practice and improve their skills.
     const chat = model.startChat({
         history: chatHistory,
         generationConfig
@@ -84,6 +80,45 @@ app.get('/', (req, res) => {
     res.render("index");
 });
 
+// app.post('/chat', async (req, res) => {
+//     try {
+//         const userInput = req.body?.userInput;
+//         console.log('incoming /chat req', userInput)
+//         if (!userInput) {
+//             return res.status(400).json({ error: 'Invalid request body' });
+//         }
+
+//         const response = await runChat(userInput, req.session);
+//         res.json({ response });
+//     } catch (error) {
+//         console.error('Error in chat endpoint:', error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+});
+
+
+// Added functions for hard-coded responses
+function getHardCodedResponse(userInput) {
+    const responses = {
+        'Hello': 'Hello Sam! How can I assist you with your piano practice today?',
+        'Sorry, we were on a trip and I wasn’t able to practice': 'No problem, hope you had fun. How much time do you have to practice today?',
+        'I have 1 hour':'Plenty of time, here’s what I’m thinking:\n- 5 minutes of scales\n- 10 minutes of a surprise activity\n- 20 minutes reviewing previous pieces\n- 20 minutes learning new material\n- 5 minutes of chill time.\nHow does that sound?',
+        'Sounds good':'Great! Let’s start with scales. Play a Eb major scale with both hands, 2 octaves up and down. You were struggling with this last session so we can play it twice.',
+        'I’m done':'Great job! I want you to play the Eb major scale with your eyes closed. This will help you focus on your muscle memory. Give it a try!',
+        'I finished': {
+            text: 'Nice work! Let’s move on to the surprise activity. I was thinking you could sight read this song: Not Like Us by Kendrick Lamar.',
+            imageURL: 'https://postimg.cc/NywntDtW',
+        },
+        // Add more predefined responses here
+    };
+
+    return responses[userInput] || 'Sorry, I did not understand that. Could you please rephrase?';
+}
+
+// Added endpoint for hard-coded responses
 app.post('/chat', async (req, res) => {
     try {
         const userInput = req.body?.userInput;
@@ -92,14 +127,10 @@ app.post('/chat', async (req, res) => {
             return res.status(400).json({ error: 'Invalid request body' });
         }
 
-        const response = await runChat(userInput, req.session);
+        const response = getHardCodedResponse(userInput);
         res.json({ response });
     } catch (error) {
         console.error('Error in chat endpoint:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
-
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
 });

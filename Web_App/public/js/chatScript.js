@@ -24,7 +24,11 @@ async function sendMessage() {
     addMessageToHistory('user', userMessage);
     
     // Add bot message to the chat history
-    addMessageToHistory('bot', botMessage);
+    if (typeof botMessage === 'string') {
+      addMessageToHistory('bot', botMessage);
+    } else {
+      addMessageToHistory('bot', botMessage.text, botMessage.imageURL);
+    }
     
     // Scroll to the bottom of the chat history
     chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -37,14 +41,30 @@ async function sendMessage() {
 function addMessageToHistory(sender, message) {
   const messageDiv = document.createElement('div');
   messageDiv.className = `${sender}-message`;
-  messageDiv.innerText = message;
+  
+  const messageContainer = document.createElement('div');
+  messageContainer.className = `messageContainer ${sender}`;
+
+  // Check if message is an object (contains text and imageURL)
+  if (typeof message === 'object') {
+    messageDiv.innerText = message.text;
+
+    // If imageURL exists, create an img element and append it
+    if (message.imageURL) {
+      console.log(message.imageURL);
+      const image = document.createElement('img');
+      image.src = message.imageURL;
+      messageContainer.appendChild(image);
+    }
+  } else {
+    // If message is a string, just set the innerText
+    messageDiv.innerText = message;
+  }
 
   const readAloudButton = document.createElement('button');
   readAloudButton.innerText = '🔊';
   readAloudButton.onclick = () => readAloud(message);
 
-  const messageContainer = document.createElement('div');
-  messageContainer.className = `messageContainer ${sender}`;
   messageContainer.appendChild(messageDiv);
   messageContainer.appendChild(readAloudButton);
 
@@ -64,3 +84,17 @@ form.addEventListener('submit', (event) => {
     loader.style.display = 'none'; // Hide the loader after the message is sent
   });
 });
+
+function checkImage(url) {
+  var image = new Image();
+  image.onload = function() {
+    if (this.width > 0) {
+      console.log("image exists");
+    }
+  }
+  image.onerror = function() {
+    console.log("image doesn't exist");
+  }
+  image.src = url;
+}
+
