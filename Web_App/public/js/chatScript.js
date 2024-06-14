@@ -74,9 +74,84 @@ function addMessageToHistory(sender, message) {
   chatHistory.appendChild(messageContainer);
 }
 
-function readAloud(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  window.speechSynthesis.speak(utterance); // Replace w/ new code to read text aloud
+// function readAloud(text) {
+//   const utterance = new SpeechSynthesisUtterance(text);
+//   window.speechSynthesis.speak(utterance); // Replace w/ new code to read text aloud
+// }
+
+// NOT WORKING CODE
+// async function readAloud(text) {
+//   try {
+//     // Fetch the API key from the server
+//     const apiKeyResponse = await fetch('/elevenlabs-api-key');
+//     const { apiKey } = await apiKeyResponse.json();
+
+//     const response = await fetch('https://api.elevenlabs.com/tts', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${apiKey}` // replace with your API key
+//       },
+//       body: JSON.stringify({ text: text, voice: 'en-US' }) // replace 'en-US' with the desired voice
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+
+//     const audioBlob = await response.blob();
+//     const audioUrl = URL.createObjectURL(audioBlob);
+//     const audio = new Audio(audioUrl);
+//     audio.play();
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
+
+async function readAloud(text) {
+  try {
+    // Fetch the API key from the server
+    const apiKeyResponse = await fetch('/elevenlabs-api-key');
+    const { apiKey } = await apiKeyResponse.json();
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: "model_id_value", // replace with your model_id
+        voice_settings: {
+          stability: 123,
+          similarity_boost: 123,
+          style: 123,
+          use_speaker_boost: true
+        },
+        pronunciation_dictionary_locators: [{
+          pronunciation_dictionary_id: "dictionary_id_value", // replace with your pronunciation_dictionary_id
+          version_id: "version_id_value" // replace with your version_id
+        }],
+        seed: 123,
+        previous_text: "previous_text_value", // replace with your previous_text
+        next_text: "next_text_value", // replace with your next_text
+        previous_request_ids: ["previous_request_id_value"], // replace with your previous_request_ids
+        next_request_ids: ["next_request_id_value"] // replace with your next_request_ids
+      })
+    };
+
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/en-US`, options);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseJson = await response.json();
+    console.log(responseJson);
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 form.addEventListener('submit', (event) => {
@@ -86,4 +161,20 @@ form.addEventListener('submit', (event) => {
   sendMessage().finally(() => {
     loader.style.display = 'none'; // Hide the loader after the message is sent
   });
+});
+
+
+const audioFiles = [
+  new Audio('../audio_files/demo_audio_1.wav'),
+  // Add more audio files here
+];
+
+let currentAudio = 0;
+
+document.getElementById('demoButton').addEventListener('click', () => {
+  // Play the current audio file
+  audioFiles[currentAudio].play();
+
+  // Advance the counter
+  currentAudio = (currentAudio + 1) % audioFiles.length;
 });

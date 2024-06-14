@@ -106,14 +106,15 @@ app.listen(port, () => {
 
 // Added functions for hard-coded responses
 function getHardCodedResponse(userInput, session) {
+    // Make more funny and Gen Z
     const responses = {
-        'Hello': 'Hello Sam! How can I assist you with your piano practice today?',
+        'Hello': 'Hello Edison! How can I assist you with your piano practice today bro?',
         'Sorry, we were on a trip and I wasn’t able to practice': 'No problem, hope you had fun. How much time do you have to practice today?',
         'I have 1 hour':'Plenty of time, here’s what I’m thinking:\n- 5 minutes of scales\n- 10 minutes of a surprise activity\n- 20 minutes reviewing previous pieces\n- 20 minutes learning new material\n- 5 minutes of chill time.\nHow does that sound?',
         'Sounds good':'Great! Let’s start with scales. Play a Eb major scale with both hands, 2 octaves up and down. You were struggling with this last session so we can play it twice.',
         'I’m done':'Great job! I want you to play the Eb major scale with your eyes closed. This will help you focus on your muscle memory. Give it a try!',
         'I finished': {
-            text: 'Nice work! Let’s move on to the surprise activity. I was thinking you could sight read this song: Not Like Us by Kendrick Lamar.\n',
+            text: 'Nice work, my man! Let’s sight read this new song by Kendrick Lamar: Not Like Us. It\'s time to clap Drake\'s cheeks like he clapped Millie Bobby Brown\'s! Give it a go.\n',
             imageURL: 'https://i.postimg.cc/Bv8fx7VQ/Not-Like-Us.png',
         },
         // Add more predefined responses here
@@ -155,3 +156,7 @@ app.post('/hardCodedChat', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.get('/elevenlabs-api-key', (req, res) => {
+    res.json({ apiKey: process.env.ELEVENLABS_API_KEY });
+  });
