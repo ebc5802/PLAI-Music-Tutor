@@ -178,7 +178,7 @@ const messagesAndAudio = [
   },
   {
     audio: new Audio('../audio_files/demo_audio_3.wav'),
-    userMessage: 'I only have about 10 minutes today.',
+    userMessage: 'I have like 10 minutes.',
     botMessage: 'I feel like you\'re capping to me, there\'s no shot you only have 10 minutes to practice.\n\nAnyways, since we have so little time, let\'s do something fun. We can warm up with some scales and then try some fun sight reading. How does that sound?',
   },
   {
@@ -209,17 +209,17 @@ document.getElementById('demoButton').addEventListener('click', () => {
     loader.style.display = 'none';
     // Add user message to the chat history
     addMessageToHistory('user', currentUserMessage);
-  }, 1000); // 2000 milliseconds = 2 seconds
-    
-  // Display the loader
-  loader.style.display = 'block';
 
-  // After a delay, hide the loader and play the current audio file
-  setTimeout(() => {
-    loader.style.display = 'none';
-    addMessageToHistory('bot', currentBotMessage); // Add bot message to the chat history
-    currentAudio.play();
-  }, 2000); // 2000 milliseconds = 2 seconds
+    // Display the loader
+    loader.style.display = 'block';
+
+    // After a delay, hide the loader and play the current audio file
+    setTimeout(() => {
+      loader.style.display = 'none';
+      addMessageToHistory('bot', currentBotMessage); // Add bot message to the chat history
+      currentAudio.play();
+    }, 2000); // 2000 milliseconds = 2 seconds
+  }, 1000); // 1000 milliseconds = 1 second
 
   // Advance the counter
   currentMessageIndex = (currentMessageIndex + 1) % messagesAndAudio.length;
