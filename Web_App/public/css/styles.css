@@ -118,3 +118,20 @@ form button {
 .messageContainer button:hover{
   background-color: rgb(171, 211, 166);
 }
+
+.demoButtonClass {
+  /* Adjust text */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 10px;
+
+  background-image: url('../images/stingray1.png');
+  background-size: cover;
+  width: 200px;
+  height: 200px;
+}
+
+.demoButtonClass:active {
+  filter: brightness(0.8);
+}
