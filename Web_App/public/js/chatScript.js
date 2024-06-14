@@ -164,17 +164,63 @@ form.addEventListener('submit', (event) => {
 });
 
 
-const audioFiles = [
-  new Audio('../audio_files/demo_audio_1.wav'),
-  // Add more audio files here
+
+const messagesAndAudio = [
+  {
+    audio: new Audio('../audio_files/demo_audio_1.wav'),
+    userMessage: 'Hey Spongebob.',
+    botMessage: 'Hey Edison, what\'s poppin! You ready to learn some new songs today?',
+  },
+  {
+    audio: new Audio('../audio_files/demo_audio_2.wav'),
+    userMessage: 'Yea I\'m ready.',
+    botMessage: 'Good looks! How much time do you got to practice?',
+  },
+  {
+    audio: new Audio('../audio_files/demo_audio_3.wav'),
+    userMessage: 'I only have about 10 minutes today.',
+    botMessage: 'I feel like you\'re capping to me, there\'s no shot you only have 10 minutes to practice.\n\nAnyways, since we have so little time, let\'s do something fun. We can warm up with some scales and then try some fun sight reading. How does that sound?',
+  },
+  {
+    audio: new Audio('../audio_files/demo_audio_4.wav'),
+    userMessage: 'I don\'t wanna do scales bruh.',
+    botMessage: {
+      text: 'Alright, fuck the scales. Let’s sight read this new song by Kendrick Lamar: Not Like Us. It\'s time to clap Drake\'s cheeks! Give it a go.\n',
+      imageURL: 'https://i.postimg.cc/Bv8fx7VQ/Not-Like-Us.png',
+    },
+  },
+  // Add more triples here
 ];
 
-let currentAudio = 0;
+let currentMessageIndex = 0;
 
 document.getElementById('demoButton').addEventListener('click', () => {
-  // Play the current audio file
-  audioFiles[currentAudio].play();
+  const currentTriple = messagesAndAudio[currentMessageIndex];
+  const currentAudio = currentTriple.audio;
+  const currentUserMessage = currentTriple.userMessage;
+  const currentBotMessage = currentTriple.botMessage;
+
+  // Display the loader
+  const loader = document.getElementById('loader');
+  loader.style.display = 'block';
+
+  // After a delay, add user message to the chat history
+  setTimeout(() => {
+    loader.style.display = 'none';
+    // Add user message to the chat history
+    addMessageToHistory('user', currentUserMessage);
+  }, 1000); // 2000 milliseconds = 2 seconds
+    
+  // Display the loader
+  loader.style.display = 'block';
+
+  // After a delay, hide the loader and play the current audio file
+  setTimeout(() => {
+    loader.style.display = 'none';
+    addMessageToHistory('bot', currentBotMessage); // Add bot message to the chat history
+    currentAudio.play();
+  }, 2000); // 2000 milliseconds = 2 seconds
 
   // Advance the counter
-  currentAudio = (currentAudio + 1) % audioFiles.length;
+  currentMessageIndex = (currentMessageIndex + 1) % messagesAndAudio.length;
 });

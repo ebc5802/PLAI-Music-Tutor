@@ -159,4 +159,5 @@ app.post('/hardCodedChat', async (req, res) => {
 
 app.get('/elevenlabs-api-key', (req, res) => {
     res.json({ apiKey: process.env.ELEVENLABS_API_KEY });
-  });
+});
+
