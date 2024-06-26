@@ -167,26 +167,40 @@ form.addEventListener('submit', (event) => {
 
 const messagesAndAudio = [
   {
-    audio: new Audio('../audio_files/demo_audio_1.wav'),
+    audio: new Audio('../audio_files/demo_audio_1.mp3'),
     userMessage: 'Hey Spongebob.',
     botMessage: 'Hey Edison, what\'s poppin! You ready to learn some new songs today?',
   },
   {
-    audio: new Audio('../audio_files/demo_audio_2.wav'),
+    audio: new Audio('../audio_files/demo_audio_2.mp3'),
     userMessage: 'Yea I\'m ready.',
     botMessage: 'Good looks! How much time do you got to practice?',
   },
   {
-    audio: new Audio('../audio_files/demo_audio_3.wav'),
+    audio: new Audio('../audio_files/demo_audio_3.mp3'),
     userMessage: 'I have like 10 minutes.',
     botMessage: 'I feel like you\'re capping to me, there\'s no shot you only have 10 minutes to practice.\n\nAnyways, since we have so little time, let\'s do something fun. We can warm up with some scales and then try some fun sight reading. How does that sound?',
   },
   {
-    audio: new Audio('../audio_files/demo_audio_4.wav'),
+    audio: new Audio('../audio_files/demo_audio_4.mp3'),
     userMessage: 'I don\'t wanna do scales bruh.',
     botMessage: {
       text: 'Alright, fuck the scales. Let’s sight read this new song by Kendrick Lamar: Not Like Us. It\'s time to clap Drake\'s cheeks! Give it a go.\n',
       imageURL: 'https://i.postimg.cc/Bv8fx7VQ/Not-Like-Us.png',
+    },
+  },
+  {
+    audio: new Audio('../audio_files/demo_audio_5.mp3'),
+    userMessage: 'Sample',
+    botMessage: {
+      text: 'Sample',
+    },
+  },
+  {
+    audio: new Audio('../audio_files/demo_audio_6.mp3'),
+    userMessage: 'Sample',
+    botMessage: {
+      text: 'Sample',
     },
   },
   // Add more triples here
@@ -218,9 +232,50 @@ document.getElementById('demoButton').addEventListener('click', () => {
       loader.style.display = 'none';
       addMessageToHistory('bot', currentBotMessage); // Add bot message to the chat history
       currentAudio.play();
-    }, 2000); // 2000 milliseconds = 2 seconds
+    }, 1000); // 1000 milliseconds = 1 second
   }, 1000); // 1000 milliseconds = 1 second
 
   // Advance the counter
   currentMessageIndex = (currentMessageIndex + 1) % messagesAndAudio.length;
 });
+
+let silenceTimer;
+
+// Check for browser support
+if (!('webkitSpeechRecognition' in window)) {
+  alert('Your browser does not support the Web Speech API. Please try using Chrome.');
+} else {
+  const recognition = new webkitSpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = function() {
+    // Clear the silence timer when the user starts speaking
+    clearTimeout(silenceTimer);
+  };
+
+  recognition.onend = function() {
+    // Start the silence timer when the user stops speaking
+    silenceTimer = setTimeout(() => {
+      // Your demo button effect code here
+      // After a delay, add user message to the chat history
+      setTimeout(() => {
+        loader.style.display = 'none';
+        // Add user message to the chat history
+        addMessageToHistory('user', currentUserMessage);
+
+        // Display the loader
+        loader.style.display = 'block';
+
+        // After a delay, hide the loader and play the current audio file
+        setTimeout(() => {
+          loader.style.display = 'none';
+          addMessageToHistory('bot', currentBotMessage); // Add bot message to the chat history
+          currentAudio.play();
+        }, 2000); // 2000 milliseconds = 2 seconds
+      }, 1000); // 1000 milliseconds = 1 second
+    }, 2000); // 2 seconds delay
+  };
+
+  recognition.start();
+}
